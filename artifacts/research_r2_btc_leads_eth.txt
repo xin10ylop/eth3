@@ -1,0 +1,21 @@
+contemporaneous 1s corr: ETH spot~BTC spot 0.587, ETH perp~BTC perp 0.602
+lag 1s: corr(ETHspot[t+k], BTCperp[t]) +0.0939 | corr(ETHspot[t+k], ETHperp[t]) +0.1354 | corr(BTCspot[t+k], ETHperp[t]) +0.1566
+lag 2s: corr(ETHspot[t+k], BTCperp[t]) +0.0240 | corr(ETHspot[t+k], ETHperp[t]) +0.0393 | corr(BTCspot[t+k], ETHperp[t]) +0.0573
+lag 3s: corr(ETHspot[t+k], BTCperp[t]) +0.0147 | corr(ETHspot[t+k], ETHperp[t]) +0.0181 | corr(BTCspot[t+k], ETHperp[t]) +0.0296
+lag 5s: corr(ETHspot[t+k], BTCperp[t]) +0.0044 | corr(ETHspot[t+k], ETHperp[t]) +0.0057 | corr(BTCspot[t+k], ETHperp[t]) +0.0135
+
+BTC -> ETH: median 1h beta of ETH on BTC = 0.933
+  H=   5s  OOS R2 own  4.977%   own+BTC  5.019%   gain +0.042 pp  (x1.01)
+  H=  10s  OOS R2 own  3.590%   own+BTC  3.612%   gain +0.022 pp  (x1.01)
+  H=  15s  OOS R2 own  2.803%   own+BTC  2.817%   gain +0.013 pp  (x1.00)
+  H=  30s  OOS R2 own  1.685%   own+BTC  1.692%   gain +0.007 pp  (x1.00)
+  H=  60s  OOS R2 own  0.878%   own+BTC  0.880%   gain +0.002 pp  (x1.00)
+  H= 300s  OOS R2 own  0.146%   own+BTC  0.138%   gain -0.008 pp  (x0.95)
+
+ETH -> BTC: median 1h beta of BTC on ETH = 0.271
+  H=   5s  OOS R2 own  5.808%   own+ETH  6.788%   gain +0.980 pp  (x1.17)
+  H=  10s  OOS R2 own  5.065%   own+ETH  5.910%   gain +0.846 pp  (x1.17)
+  H=  15s  OOS R2 own  4.353%   own+ETH  5.084%   gain +0.731 pp  (x1.17)
+  H=  30s  OOS R2 own  3.124%   own+ETH  3.619%   gain +0.496 pp  (x1.16)
+  H=  60s  OOS R2 own  1.993%   own+ETH  2.298%   gain +0.305 pp  (x1.15)
+  H= 300s  OOS R2 own  0.494%   own+ETH  0.555%   gain +0.061 pp  (x1.12)

@@ -40,3 +40,21 @@ download finished and before any ETH data was looked at. It replaces points 2-3 
 * Unchanged: data sources, period, splits and embargo; the holdout (2026-05-02 .. 2026-11-02)
   is scored once, at the end, with the walk-forward protocol (fit through 2026-04-30); the
   regime-blind 2025-only reference; the online-recalibration adoption rule; the deployment refit.
+
+## Amendment 2 - final ETH design, decided from 2025 research before any holdout scoring
+
+Research results (artifacts/research_r*.txt, 2025 data; close pressure also Jan-Apr 2026):
+* R1: ETH is *less* predictable than BTC on its own signals (next-10s OOS R2 3.6% vs 5.1%);
+  weaker perp->spot lead (0.135 vs 0.172); smaller no-move atom despite a 25x larger relative
+  tick (ETH moves more); clock structure essentially identical.
+* R2: BTC does **not** lead ETH beyond ETH's own perpetual (+0.02 pp R2 at 10 s); the lead runs
+  ETH -> BTC instead (+0.85 pp, x1.17 for BTC spot).
+* R3: ETH close pressure from Feb 2026 is weak (+0.03..+0.05 sigma, t <= 2.2; BTC: up to t = 7.5).
+* R4: ETH mean-reverts after large 2-3 min moves, generically (placebo anchor as strong as P0).
+* R5 (LightGBM probe): BTC cross-asset features +0.02 pp (direction) / +0.04 pp (magnitude);
+  1h-vol-scaled moves +0.00 pp. Neither clears the bar for adding a second live data feed.
+
+Final ETH design: the BTC architecture with every component re-estimated on ETH data (clock
+profile, scale, no-move atom, drift, residual law, calibration, touch/first-passage, regime
+state incl. close pressure), no cross-asset inputs, BTC hyper-parameters and blend rule.
+Holdout protocol unchanged (Amendment 1).

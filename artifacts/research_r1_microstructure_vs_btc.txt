@@ -1,0 +1,29 @@
+ETH non-finite spot: 0  perp back-filled: 5
+BTC non-finite spot: 0  perp back-filled: 0
+statistic (2025)                                       ETH          BTC
+median price $                                   2982.8200  103548.0400
+tick (0.01) in bps                                  0.0335       0.0010
+1s vol bps                                          1.1634       0.6776
+tick / 1s vol                                       0.0288       0.0014
+annualized vol                                      0.6533       0.3805
+zero-trade seconds %                               14.4400       6.6373
+zero 1s returns %                                  39.8139      44.6994
+spot acf lag1                                       0.0766       0.1012
+spot acf lag2                                       0.0225       0.0422
+spot acf lag3                                       0.0135       0.0228
+perp->spot corr lag1                                0.1354       0.1724
+perp->spot corr lag2                                0.0393       0.0565
+perp->spot corr lag5                                0.0057       0.0137
+spot<->perp corr 1s                                 0.8572       0.8472
+own-signal OOS R2 10s %                             3.6422       5.0674
+P(no move over 10s) %                               7.4759      18.0477
+own-signal OOS R2 30s %                             1.6991       3.1045
+P(no move over 30s) %                               2.0683       7.5408
+own-signal OOS R2 60s %                             0.8760       1.9636
+P(no move over 60s) %                               0.8464       3.5241
+own-signal OOS R2 300s %                            0.1404       0.4900
+P(no move over 300s) %                              0.1575       0.2817
+clock: |r| e=0 vs mean                              1.6183       1.8323
+clock: |r| e=295-299 vs mean                        0.7380       0.7424
+remaining var share at e=285 (uniform 0.05)         0.0368       0.0372
+P(close == open) %                                  0.1631       0.2757
