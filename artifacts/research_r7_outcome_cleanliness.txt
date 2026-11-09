@@ -1,0 +1,26 @@
+
+2025 (train)                                        ETH       BTC
+P(final side == side at e=60) %                  64.552    64.173
+share 'undecided' |z|<0.25 at e=60 %             34.941    33.896
+P(final side == side at e=150) %                 76.205    76.721
+share 'undecided' |z|<0.25 at e=150 %            17.729    16.881
+P(final side == side at e=240) %                 86.788    87.503
+share 'undecided' |z|<0.25 at e=240 %             9.029     8.705
+P(final side == side at e=285) %                 94.958    95.595
+share 'undecided' |z|<0.25 at e=285 %             4.316     4.317
+P0 crossings in 2nd half of window (mean)         1.395     1.367
+|final move| / (1h sigma*sqrt(300)) median        0.715     0.802
+P(close == open) %                                0.163     0.276
+
+Jan-Apr 2026 (valid)                                ETH       BTC
+P(final side == side at e=60) %                  64.261    63.500
+share 'undecided' |z|<0.25 at e=60 %             39.348    36.728
+P(final side == side at e=150) %                 75.052    73.826
+share 'undecided' |z|<0.25 at e=150 %            20.682    19.264
+P(final side == side at e=240) %                 85.151    83.578
+share 'undecided' |z|<0.25 at e=240 %            10.808     9.798
+P(final side == side at e=285) %                 93.330    91.074
+share 'undecided' |z|<0.25 at e=285 %             5.112     4.780
+P0 crossings in 2nd half of window (mean)         1.391     1.455
+|final move| / (1h sigma*sqrt(300)) median        0.633     0.681
+P(close == open) %                                0.254     0.204

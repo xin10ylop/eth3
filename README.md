@@ -11,7 +11,12 @@ every ETH-specific hypothesis was tested, and the one that held up was built int
 validated before the holdout was touched. The decision trail is in `artifacts/PREREGISTRATION.md`
 (committed step by step, each amendment before the corresponding results were seen).
 
-> RESULTS_PLACEHOLDER
+**Headline (untouched 6-month holdout, May-Nov 2026, walk-forward model trained through April 2026):**
+log-loss skill vs a naive Gaussian random walk of **11.3% / 9.2% / 6.4% / 4.3% / 2.8%** for the
+10s / 15s / 30s / 60s / close heads, positive in 7 of 7 months for every head and significant in
+every market regime, calibrated (ECE <= 0.006). In absolute terms the ETH 5-minute outcome is
+**more predictable than BTC's** over the same period (final log-loss 0.462 vs 0.487) - section 3
+explains why, and why ETH's *direction* is nonetheless less predictable than BTC's.
 
 ---
 
@@ -62,3 +67,91 @@ are kept and re-estimated on ETH.
   short-term volatility it creates itself. Adopted only after passing a rule fixed in advance on
   the validation set (better on every head; close-head ΔLL −0.00013, CI [−0.00022, −0.00003]).
 * No cross-asset inputs (tested, rejected).
+
+## 3. Is ETH more predictable than BTC? Yes and no - precisely
+
+Same holdout period (2026-05-02 → 2026-11-02), same protocol, final models of both repositories:
+
+| holdout log-loss of P(S >= P0) | ETH naive | **ETH final** | BTC naive | BTC final |
+|---|---|---|---|---|
+| 10 s | 0.216 | 0.192 | 0.217 | **0.177** |
+| 30 s | 0.343 | 0.321 | 0.342 | **0.305** |
+| 60 s | 0.441 | 0.422 | 0.442 | **0.410** |
+| **5-minute close** | 0.475 | **0.462** | 0.529 | 0.487 |
+| close, last 30 s of the window | 0.163 | **0.144** | 0.322 | 0.225 |
+
+* **Short horizons (10-60 s): BTC is more predictable.** Its spot lags its perpetual more and
+  its volatility is more forecastable (research R1/R6); ETH's directional AUC at 10 s is 0.630
+  vs 0.662.
+* **The 5-minute outcome: ETH is more predictable**, and increasingly so as the window unfolds.
+  Not because ETH's direction is easier to call (at the open both are ~coin flips: AUC 0.531
+  vs 0.540) but because ETH's path around its open stays *decided*. In 2025 both assets were
+  equally "clean" (P(final side = side at e=285): 95.0% vs 95.6%); from 2026 BTC's endings got
+  noisier (93.3% ETH vs 91.1% BTC, more late crossings of P0) because of the BTC-specific
+  pull-to-the-open in the final seconds (research R3/R7). ETH barely shows it.
+* **Overshoot-reversion is ETH's own edge** (3-5x BTC), now exploited by the reversal features.
+* Consequence for the skill numbers: the naive baseline is already good on ETH's clean
+  endings, so ETH's *skill over naive* is smaller even though its absolute forecast is better.
+  The ETH advantage on the 5-minute outcome depends on the close-pressure regime staying
+  BTC-specific; the regime-state features monitor it live.
+
+## 4. Results on the untouched holdout (53,280 windows)
+
+| head | naive Gaussian | **final** | skill | ΔLL [95% CI] | ECE | AUC at window open |
+|---|---|---|---|---|---|---|
+| 10 s | 0.2162 | **0.1918** | **11.3%** | −0.0245 [−0.0265, −0.0227] | 0.0013 | 0.620 |
+| 15 s | 0.2581 | **0.2345** | **9.2%** | −0.0237 [−0.0256, −0.0219] | 0.0013 | 0.603 |
+| 30 s | 0.3432 | **0.3211** | **6.4%** | −0.0221 [−0.0237, −0.0205] | 0.0020 | 0.578 |
+| 60 s | 0.4413 | **0.4223** | **4.3%** | −0.0190 [−0.0203, −0.0178] | 0.0041 | 0.561 |
+| 5 m close | 0.4748 | **0.4617** | **2.8%** | −0.0132 [−0.0146, −0.0117] | 0.0060 | 0.531 |
+
+* **Consistency:** positive skill in **7 of 7 months for all five heads**; significant in all 50
+  head x regime cells (vol terciles, weekday/weekend, US session, trend, rising vol, and the 5%
+  most volatile days, where skill is still 1.0-4.3%). `artifacts/robustness_test_wf5.txt`,
+  `artifacts/regime_test_wf5.txt`.
+* **Close head:** skill grows from 0.2% at the open to 11.6% in the last 30 s; quantile coverage
+  4.4/9.1/24.1/50.7/76.0/90.5/95.3% at nominal 5/10/25/50/75/90/95%; magnitude forecast 6.2%
+  better than the naive scale; touch probabilities ΔLL −0.038 vs the Brownian formula.
+  Full tables: `artifacts/tables_test_wf5.md`; figures: `artifacts/figures/`.
+* **Regime-aware + reversal model vs the regime-blind 2025-only reference**, paired on identical
+  rows (`artifacts/compare_test_frozen_vs_wf5.txt`): better on every head - 30 s −0.00095
+  [−0.00119, −0.00073], 60 s −0.00106 [−0.00131, −0.00081], close −0.00046 [−0.00070, −0.00021].
+* **Online recalibration: not adopted for ETH** - no head clears the pre-registered rule (all
+  CIs include zero). Unlike BTC, ETH's calibration does not drift, consistent with its weak
+  close-pressure regime.
+* The live predictor reproduces the batch pipeline exactly on all five heads
+  (`artifacts/predictor_consistency.txt`, max difference 0.0).
+
+## 5. Usage
+
+```python
+from btcmodel.predictor import Predictor
+pred = Predictor.load_dir("models/wf5_20260430")          # holdout-evaluated ETH models
+pred.ingest(arrays, t0_epoch)   # >= 9 days of ETHUSDT 1s spot klines + perp 1s bars, hour-aligned
+out = pred.predict(now_epoch_second, p0=window_open_price)
+out["heads"]["close"]["p_above_ref"]           # P(5-minute close >= P0)
+out["heads"]["h10"]["quantiles_usd"]           # ETH price distribution 10 s ahead
+out["heads"]["close"]["touch"]["+10bps"]       # P(trade at >= P0*1.001 before the close)
+```
+
+`python scripts/demo_live.py` replays a holdout window second by second through this interface.
+Rebuild everything: `python -m btcmodel.data 2025-01-01 2026-11-02 6`, then
+`bash scripts/run_asset_pipeline.sh timeline` (ETH is this repository's default asset).
+
+## 6. Limitations
+
+* Reference feed is Binance ETHUSDT spot; contracts settling on another feed need a refit on it.
+* Probability forecasts, not a strategy: no fees, latency or impact.
+* The 5-minute direction at the open is barely predictable (AUC 0.53).
+* Regimes drift (BTC's close pressure appeared in Feb 2026; ETH's could too): refit monthly.
+
+## 7. Repository map
+
+| path | content |
+|---|---|
+| `research/r1..r7*.py` | the ETH research (outputs in `artifacts/research_*.txt`) |
+| `btcmodel/` | data, timeline, features, regime state, models (incl. `REV_FEATS`), events, predictor |
+| `scripts/` | pipeline (`run_asset_pipeline.sh`), training, frozen evaluation, walk-forward, analysis |
+| `artifacts/` | pre-registration with amendments, results, tables, figures |
+| `models/wf5_20260430/` | packaged holdout-evaluated ETH models |
+| `tests/` | lookahead tests, live-vs-batch consistency |
