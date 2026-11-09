@@ -78,7 +78,7 @@ Same holdout period (2026-05-02 → 2026-11-02), same protocol, final models of 
 | 30 s | 0.343 | 0.321 | 0.342 | **0.305** |
 | 60 s | 0.441 | 0.422 | 0.442 | **0.410** |
 | **5-minute close** | 0.475 | **0.462** | 0.529 | 0.487 |
-| close, last 30 s of the window | 0.163 | **0.144** | 0.322 | 0.225 |
+| close, last 30 s of the window | 0.163 | **0.144** | 0.322 | 0.215 |
 
 * **Short horizons (10-60 s): BTC is more predictable.** Its spot lags its perpetual more and
   its volatility is more forecastable (research R1/R6); ETH's directional AUC at 10 s is 0.630
