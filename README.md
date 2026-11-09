@@ -124,9 +124,16 @@ Same holdout period (2026-05-02 → 2026-11-02), same protocol, final models of 
 
 ## 5. Usage
 
+Two packaged model sets (same design; load either with `Predictor.load_dir`):
+
+| directory | trained on | use |
+|---|---|---|
+| `models/wf5_20260430/` | 2025-01 → 2026-04-30 | **the holdout-evaluated models** - every number in section 4 |
+| `models/prod_20261102/` | 2025-01 → 2026-11-02 (2025 thinned to every other window = recency tilt; early stopping on 2026-10-03 → 11-02) | **deployment** - same recipe on the newest data; no untouched data remains to score it, so its quality is inferred from the wf5 holdout |
+
 ```python
 from btcmodel.predictor import Predictor
-pred = Predictor.load_dir("models/wf5_20260430")          # holdout-evaluated ETH models
+pred = Predictor.load_dir("models/prod_20261102")         # deployment (or models/wf5_20260430)
 pred.ingest(arrays, t0_epoch)   # >= 9 days of ETHUSDT 1s spot klines + perp 1s bars, hour-aligned
 out = pred.predict(now_epoch_second, p0=window_open_price)
 out["heads"]["close"]["p_above_ref"]           # P(5-minute close >= P0)
@@ -154,4 +161,5 @@ Rebuild everything: `python -m btcmodel.data 2025-01-01 2026-11-02 6`, then
 | `scripts/` | pipeline (`run_asset_pipeline.sh`), training, frozen evaluation, walk-forward, analysis |
 | `artifacts/` | pre-registration with amendments, results, tables, figures |
 | `models/wf5_20260430/` | packaged holdout-evaluated ETH models |
+| `models/prod_20261102/` | packaged deployment ETH models, refit through 2026-11-02 |
 | `tests/` | lookahead tests, live-vs-batch consistency |
