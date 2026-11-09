@@ -141,7 +141,7 @@ class Predictor:
             hm.prepare(d)
             p_m = float(hm.p_up(d)[0])
             dm = self.models[head]["direct"]
-            dfe = sorted(set(DIRECT_FEATS + list(getattr(hm, "regime", []))))
+            dfe = dm.feature_name()          # exactly the columns the direct model was trained on
             p_d = float(dm.predict(d[dfe], num_iteration=dm.best_iteration)[0])
             p_m, p_d = min(max(p_m, 1e-5), 1 - 1e-5), min(max(p_d, 1e-5), 1 - 1e-5)
             p_blend = float(expit(0.5 * logit(p_m) + 0.5 * logit(p_d)))

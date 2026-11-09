@@ -58,3 +58,15 @@ Final ETH design: the BTC architecture with every component re-estimated on ETH 
 profile, scale, no-move atom, drift, residual law, calibration, touch/first-passage, regime
 state incl. close pressure), no cross-asset inputs, BTC hyper-parameters and blend rule.
 Holdout protocol unchanged (Amendment 1).
+
+## Amendment 3 - ETH reversal features adopted (validation only; before any holdout scoring)
+
+R6 (artifacts/research_r6_predictability_profile.txt) showed the one dimension in which ETH is
+more predictable than BTC: it overshoots and mean-reverts after large moves (reversal spread
++0.03..+0.06 after >1.5-sigma moves over 60-600 s, t = 28-57; BTC -0.01..+0.02). Candidate
+features: recent moves and window excursions in 1-hour-vol units (models.REV_FEATS). Rule fixed
+before the test: adopt only if the close head improves on validation with a day-block CI
+excluding zero and the 30 s / 60 s heads are not worse. Result (paired, identical rows):
+30 s -0.00007 [-0.00012, -0.00001]; 60 s -0.00021 [-0.00028, -0.00014];
+close -0.00013 [-0.00022, -0.00003]  ->  adopted (artifacts/compare_valid_frozen_vs_rev.txt).
+Final ETH model = Amendment 2 design + REV_FEATS + regime-state features, walk-forward.

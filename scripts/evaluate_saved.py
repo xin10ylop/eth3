@@ -65,7 +65,7 @@ def main():
     p["B2_fattail"] = np.clip(hm.struct_up(ev, use_drift=False), 1e-5, 1 - 1e-5)
     p["B3_struct"] = ev["p_struct"].values
     p["M_final"] = np.clip(hm.p_up(ev), 1e-5, 1 - 1e-5)
-    feats = sorted(set(VOL_FEATS + DIR_FEATS + ["lH", "z_naive", "lproj_300", "lsint"] + list(getattr(hm, "regime", []))))
+    feats = dm.feature_name()            # exactly the columns the direct model was trained on
     p["D_directGBM"] = np.clip(dm.predict(ev[feats], num_iteration=dm.best_iteration), 1e-5, 1 - 1e-5)
     p["E_blend"] = expit(0.5 * logit(p["M_final"]) + 0.5 * logit(p["D_directGBM"]))
     res = [summarize(k, y, pk, g, ref=p["B0_naive"] if k != "B0_naive" else None) for k, pk in p.items()]

@@ -1,0 +1,27 @@
+dimension (2025, OOS Jul-Dec)                           ETH        BTC   more predictable
+1 direction R2 30s %                                 1.9746     4.1592   BTC
+1 direction R2 120s %                                0.4254     1.5067   BTC
+1 direction R2 300s %                                0.0598     0.4667   BTC
+2 magnitude R2 30s %                                 4.8815     5.8400   BTC
+2 magnitude R2 300s %                                7.7289    21.6716   BTC
+3 tail event rate %                                 12.7842    17.4677   
+3 tail AUC (|5m move| > 2 sigma)                     0.6796     0.7109   BTC
+4 autocorr 1-min returns lag 1                      -0.0131    -0.0017   
+4 autocorr 1-min returns lag 2                      -0.0082    -0.0006   
+4 autocorr 1-min returns lag 5                      -0.0164    -0.0087   
+4 autocorr 5-min returns lag 1                      -0.0083    -0.0157   
+4 variance ratio 5-min vs 1-min                      0.9607     1.0188   
+4 variance ratio 15-min vs 1-min                     0.9449     0.9706   
+4 variance ratio 60-min vs 1-min                     0.9555     0.9615   
+5 reversal spread after 60s move >1.5sig             0.0318    -0.0065   
+5   t-stat (60s)                                    28.3614    -6.3737   
+5 reversal spread after 150s move >1.5sig            0.0502     0.0084   
+5   t-stat (150s)                                   44.9675     8.3370   
+5 reversal spread after 300s move >1.5sig            0.0541     0.0129   
+5   t-stat (300s)                                   48.3818    12.8926   
+5 reversal spread after 600s move >1.5sig            0.0637     0.0229   
+5   t-stat (600s)                                   56.5750    22.9200   
+6 direction R2 30s, US hours (13-21 UTC wkday) %     1.6171     3.5684   BTC
+6 direction R2 30s, weekend %                        1.4393     3.5437   BTC
+6 direction R2 30s, low vol %                        3.2325     6.1304   BTC
+6 direction R2 30s, high vol %                       0.5184     1.0199   BTC

@@ -30,6 +30,8 @@ inputs.
 """
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
@@ -58,6 +60,13 @@ DIR_FEATS = [
     "lrvsa_300", "lcnt_ratio", "lvol_ratio", "jump_300", "hod_et", "som",
 ]
 
+# ETH-specific reversal features (research R4/R6: ETH overshoots and mean-reverts after large
+# moves, 3-5x more than BTC). Moves are measured in slow 1-hour vol units so that a big move is
+# not damped by the short-term vol it creates itself.  On by default here; BTC_REV=0 disables.
+REV_FEATS = ["rz1h_60", "rz1h_120", "rz1h_300", "rz1h_900", "xz1h", "ddmax1h", "ddmin1h", "lv5_1h"]
+if os.environ.get("BTC_REV", "1") == "1":     # default ON in the ETH repository (amendment 3)
+    DIR_FEATS = DIR_FEATS + REV_FEATS
+
 LGB_BASE = dict(
     learning_rate=0.05, num_leaves=63, min_data_in_leaf=2000, feature_fraction=0.7,
     bagging_fraction=0.7, bagging_freq=1, lambda_l2=10.0, max_bin=127, verbose=-1, num_threads=4,
@@ -81,6 +90,16 @@ def add_derived(df: pd.DataFrame, head: str) -> pd.DataFrame:
     out["wrange_v"] = df["wmax_v"].values - df["wmin_v"].values
     # distance to reference in units of the naive horizon scale
     out["z_naive"] = df["xcur"].values / (v * np.sqrt(H))
+    # reversal features (used only when BTC_REV=1; cheap, causal)
+    v1h = np.maximum(np.sqrt(np.exp(df["lrv_3600"].values.astype(np.float64))), 2e-6)
+    for L in (60, 120, 300, 900):
+        out[f"rz1h_{L}"] = df[f"r_{L}"].values * v / v1h
+    ee = np.sqrt(np.maximum(df["e"].values.astype(np.float64), 1.0))
+    x = df["xcur"].values
+    out["xz1h"] = x / (v1h * ee)
+    out["ddmax1h"] = (x - df["wmax_v"].values * v * ee) / (v1h * ee)     # pull-back from window high
+    out["ddmin1h"] = (x - df["wmin_v"].values * v * ee) / (v1h * ee)     # bounce off window low
+    out["lv5_1h"] = np.log(v / v1h)
     for k, a in out.items():
         df[k] = a.astype(np.float32) if k not in ("naive_scale",) else a
     return df
